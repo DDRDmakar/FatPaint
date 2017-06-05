@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.canvas.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+
+<AnchorPane prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MainWindowFXMLController">
+    <children>
+        <Button fx:id="clear" layoutX="20" layoutY="580" onAction="#clearAllPixels" text="Clear" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="20.0" />
+      <Canvas fx:id="pic" height="435.0" layoutX="20.0" layoutY="74.0" width="548.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="80.0">
+      </Canvas>
+    </children>
+</AnchorPane>
