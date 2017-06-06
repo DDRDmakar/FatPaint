@@ -1,34 +1,37 @@
 package application;
 
-import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
-import javafx.scene.Group;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.Slider;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.ArcType;
-import javafx.scene.control.TextField;
-import javafx.stage.Stage;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.input.MouseEvent;
-
-import java.awt.event.*;
 import javafx.event.EventHandler;
-//import java.beans.EventHandler;
 
-/**
- * Created by DDRDmakar on 06.06.2017.
- */
 public class MainWindowFXMLController {
 
     // +====================[VARIABLES]====================+
     @FXML private Canvas pic;
     @FXML private Button clearImage;
+
+    @FXML private Slider slider_size, slider_R, slider_G, slider_B;
+    @FXML private Label slider_size_label, slider_R_label, slider_G_label, slider_B_label;
+
+    @FXML private Rectangle
+            colorSampleBlack,
+            colorSampleWhite,
+            colorSampleRed,
+            colorSampleGreen,
+            colorSampleBlue,
+            colorSampleYellow,
+            colorSamplePink;
 
     private GraphicsContext gc;
 
@@ -36,14 +39,13 @@ public class MainWindowFXMLController {
 
     // CONSTRUCTOR
     public void MainWindowFXMLController() {
-        System.out.println("init");
         colorAlpha = Color.BLACK;
         colorDraw = Color.WHITE;
     }
 
     // +====================[PRIVATE FUNCTIONS]====================+
 
-    private void drawShapes() {
+    private void drawDemo() {
 
         System.out.println("draw shapes");
 
@@ -73,13 +75,32 @@ public class MainWindowFXMLController {
     private void reset() {
         gc.setFill(colorAlpha);
         gc.fillRect(0, 0, pic.getWidth(), pic.getHeight());
-        System.out.println(pic.getWidth() + " " + pic.getHeight());
     }
 
     @FXML
     void clearAllPixels(ActionEvent event) {
-        System.out.println("clear");
         reset();
+    }
+
+    private void refreshColor() {
+        colorDraw = new Color(slider_R.getValue(), slider_G.getValue(), slider_B.getValue(), 1);
+        gc.setStroke(colorDraw);
+    }
+
+    private void refreshColor(Color c) {
+        colorDraw = c;
+        gc.setStroke(colorDraw);
+        slider_R.setValue(colorDraw.getRed());
+        slider_G.setValue(colorDraw.getGreen());
+        slider_B.setValue(colorDraw.getBlue());
+        initLables();
+    }
+
+    private void initLables() {
+        slider_size_label.setText(String.format("%.2f", slider_size.getValue()));
+        slider_R_label.setText(String.format("%.2f", slider_R.getValue()));
+        slider_G_label.setText(String.format("%.2f", slider_G.getValue()));
+        slider_B_label.setText(String.format("%.2f", slider_B.getValue()));
     }
 
     // +====================[PUBLIC FUNCTIONS]====================+
@@ -87,12 +108,13 @@ public class MainWindowFXMLController {
     public void initialize() {
         gc = pic.getGraphicsContext2D();
 
-        drawShapes();
+        //drawDemo();
 
         pic.addEventHandler(MouseEvent.MOUSE_PRESSED,
                 new EventHandler<MouseEvent>(){
                     @Override
                     public void handle(MouseEvent event) {
+                        gc.setLineWidth(slider_size.getValue());
                         gc.beginPath();
                         gc.moveTo(event.getX(), event.getY());
                         gc.stroke();
@@ -114,9 +136,73 @@ public class MainWindowFXMLController {
                     public void handle(MouseEvent event) {}
                 });
 
+        slider_size.valueProperty().addListener(new ChangeListener<Number>() {
+            public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
+                slider_size_label.setText(String.format("%.2f", new_val));
+            }
+        });
+
+        slider_R.valueProperty().addListener(new ChangeListener<Number>() {
+            public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
+                slider_R_label.setText(String.format("%.2f", new_val));
+                refreshColor();
+            }
+        });
+        slider_G.valueProperty().addListener(new ChangeListener<Number>() {
+            public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
+                slider_G_label.setText(String.format("%.2f", new_val));
+                refreshColor();
+            }
+        });
+        slider_B.valueProperty().addListener(new ChangeListener<Number>() {
+            public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
+                slider_B_label.setText(String.format("%.2f", new_val));
+                refreshColor();
+            }
+        });
+
+        colorSampleBlack.addEventFilter(MouseEvent.MOUSE_CLICKED,
+                new EventHandler<MouseEvent>(){
+                    @Override
+                    public void handle(MouseEvent event) { refreshColor(Color.BLACK); }
+                });
+        colorSampleWhite.addEventFilter(MouseEvent.MOUSE_CLICKED,
+                new EventHandler<MouseEvent>(){
+                    @Override
+                    public void handle(MouseEvent event) { refreshColor(Color.WHITE); }
+                });
+        colorSampleRed.addEventFilter(MouseEvent.MOUSE_CLICKED,
+                new EventHandler<MouseEvent>(){
+                    @Override
+                    public void handle(MouseEvent event) { refreshColor(Color.RED); }
+                });
+        colorSampleGreen.addEventFilter(MouseEvent.MOUSE_CLICKED,
+                new EventHandler<MouseEvent>(){
+                    @Override
+                    public void handle(MouseEvent event) { refreshColor(Color.GREEN); }
+                });
+        colorSampleBlue.addEventFilter(MouseEvent.MOUSE_CLICKED,
+                new EventHandler<MouseEvent>(){
+                    @Override
+                    public void handle(MouseEvent event) { refreshColor(Color.BLUE); }
+                });
+        colorSampleYellow.addEventFilter(MouseEvent.MOUSE_CLICKED,
+                new EventHandler<MouseEvent>(){
+                    @Override
+                    public void handle(MouseEvent event) { refreshColor(Color.YELLOW); }
+                });
+        colorSamplePink.addEventFilter(MouseEvent.MOUSE_CLICKED,
+                new EventHandler<MouseEvent>(){
+                    @Override
+                    public void handle(MouseEvent event) { refreshColor(new Color(1, 0, 0.65,1 )); }
+                });
+
+        refreshColor();
+        initLables();
         colorAlpha = Color.BLACK;
         colorDraw = Color.WHITE;
         gc.setFill(colorAlpha);
         gc.setStroke(colorDraw);
+        reset();
     }
 }

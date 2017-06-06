@@ -1,2 +1,5 @@
 .idea/*
-out/*
+fatpaint.properties
+fatpaint.xml
+module_fatpaint.xml
+out/
